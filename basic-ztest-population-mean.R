@@ -1,7 +1,15 @@
 # Source:  https://www.dummies.com/education/math/statistics/z-testing-r/
 
+#The distance from the sample mean to the population mean in units 
+#of the standard error
 
-z.test.one.sample = function(sample.mean, sample.size, popmu, popstdev, alpha.level) {
+z.test.one.sample = function(
+    sample.mean, 
+    sample.size, 
+    popmu, 
+    popstdev, 
+    alpha.level) {
+  
   # sample.mean is your sample mean
   # sample.size is the number of values in your sample mean
   # popmu is the population mean
@@ -12,18 +20,28 @@ z.test.one.sample = function(sample.mean, sample.size, popmu, popstdev, alpha.le
   #compute the z-score
   
   stderror.of.pop.mean <- popstdev/sqrt(sample.size)
-  z.score <- round((sample.mean-popmu)/stderror.of.pop.mean, 3)
+  z.score <- (sample.mean-popmu)/stderror.of.pop.mean
   
   one.tail.p <- round(pnorm(abs(z.score),lower.tail = FALSE),5)
   
   number.tails <- 2
   
-  x.percentile.lower <- qnorm((1-alpha.level)/number.tails, mean=0, sd=1)
+  x.percentile.lower <- qnorm((1-(1-alpha.level))/number.tails, mean=0, sd=1)
   x.percentile.upper <- x.percentile.lower*-1
-    #qnorm((1-((1-alpha.level)/number.tails), mean=0, sd=1)
+
+  z.probability <- pnorm(z.score)*number.tails
+  
+  x.percentile.lower <- qnorm((alpha.value/number.tails), mean=0, sd=1)
+  
+  
+  z.confidence_interval_upper = sample.mean + x.percentile.lower*stderror.of.pop.mean
+  z.confidence_interval_lower = sample.mean - x.percentile.lower*stderror.of.pop.mean
   
   return (list("z" = z.score, 
+               "z score probability" = z.probability,
                "stderrorOfPopMean" = stderror.of.pop.mean,
+               "conf int upper limit" =  z.confidence_interval_upper,
+               "conf int lower limit" = z.confidence_interval_lower,
                "x.percentile.lower" = x.percentile.lower,
                "x.percentile.upper" = x.percentile.upper))
   
@@ -58,11 +76,7 @@ IQ.data.vector <- c(100,103,104,109,109,88, 103, 155, 119, 103, 116,105,108,97)
 
 z.results <- z.test.vector(IQ.data.vector, 100, 15)
 
-z.results <- z.test.one.sample(sample.mean=140, 
-                               sample.size=30, 
-                               popmu=100, 
-                               popstdev=15,
-                               alpha.level = 0.95)
+
 
 
 #######################################################################
@@ -111,13 +125,44 @@ p.left.of.x <- pnorm(x, mu, stdev)
 p.right.of.x <- 1-pnorm(x, mu, stdev)
 
 #################################
+#WIKIPEDIA EXAMPLE: https://en.wikipedia.org/wiki/Z-test
+
+
+#Suppose that in a particular geographic region, the mean and standard 
+#deviation of scores on a reading test are 100 points, and 12 points, 
+#respectively. Our interest is in the scores of 55 students in a particular 
+#school who received a mean score of 96. We can ask whether this mean score 
+#is significantly lower than the regional mean—that is, are the students 
+#in this school comparable to a simple random sample of 55 students 
+#from the region as a whole, or are their scores surprisingly low?
+
 alpha.value <- 0.05
 number.tails <- 2
+popmu = 100
+popstdev=12
 
 x.percentile.lower <- qnorm((alpha.value/number.tails), mean=0, sd=1)
 x.percentile.upper <- qnorm(1-(alpha.value/number.tails), mean=0, sd=1)
 
+z.results <- z.test.one.sample(sample.mean=96, 
+                               sample.size=55, 
+                               popmu=popmu, 
+                               popstdev=popstdev,
+                               alpha.level = alpha.value)
 
-mu = 2
-stdev = 0.6
-x = 1.5
+cat ("The sample mean is ", z.results$z, " standard error units from ",
+       "the population mean of ", popmu)
+
+
+builtin.z.test <- z.test()
+
+z.results <- z.test.one.sample(sample.mean=346, 
+                               sample.size=50, 
+                               popmu=popmu, 
+                               popstdev=108,
+                               alpha.level = alpha.value)
+
+cat ("The sample mean is ", z.results$z, " standard error units from ",
+     "the population mean of ", popmu)
+
+
