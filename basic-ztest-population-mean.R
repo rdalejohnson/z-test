@@ -35,7 +35,7 @@ z.results <- z.test.vector(IQ.data.vector, 100, 15)
 
 mu = 2
 stdev = 0.6
-x = 1.584
+x = 1.5
 
 #Draw the normal distribution, with x axis
 #marked off in standard deviations.
@@ -71,4 +71,7 @@ cord.c = c(x, seq(x, max(range), 0.01),                   max(range))
 cord.d = c(0, dnorm(seq(x, max(range), 0.01), mu, stdev), 0)
 polygon(cord.c, cord.d, col=grey(0.90))
 
+p.left.of.x <- pnorm(x, mu, stdev)
+p.right.of.x <- 1-pnorm(x, mu, stdev)
 
+x.percentile <- qnorm(0.95, mu, stdev) 
