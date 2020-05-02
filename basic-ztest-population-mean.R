@@ -1,5 +1,34 @@
 # Source:  https://www.dummies.com/education/math/statistics/z-testing-r/
 
+
+z.test.one.sample = function(sample.mean, sample.size, popmu, popstdev, alpha.level) {
+  # sample.mean is your sample mean
+  # sample.size is the number of values in your sample mean
+  # popmu is the population mean
+  # popvar is the population standard deviation
+  
+  one.tail.p <- NULL
+  
+  #compute the z-score
+  
+  stderror.of.pop.mean <- popstdev/sqrt(sample.size)
+  z.score <- round((sample.mean-popmu)/stderror.of.pop.mean, 3)
+  
+  one.tail.p <- round(pnorm(abs(z.score),lower.tail = FALSE),5)
+  
+  number.tails <- 2
+  
+  x.percentile.lower <- qnorm((1-alpha.level)/number.tails, mean=0, sd=1)
+  x.percentile.upper <- x.percentile.lower*-1
+    #qnorm((1-((1-alpha.level)/number.tails), mean=0, sd=1)
+  
+  return (list("z" = z.score, 
+               "stderrorOfPopMean" = stderror.of.pop.mean,
+               "x.percentile.lower" = x.percentile.lower,
+               "x.percentile.upper" = x.percentile.upper))
+  
+}
+
 z.test.vector = function(x, popmu, popstdev) {
   # x is your data set/observations
   # popmu is the population mean
@@ -29,7 +58,14 @@ IQ.data.vector <- c(100,103,104,109,109,88, 103, 155, 119, 103, 116,105,108,97)
 
 z.results <- z.test.vector(IQ.data.vector, 100, 15)
 
+z.results <- z.test.one.sample(sample.mean=140, 
+                               sample.size=30, 
+                               popmu=100, 
+                               popstdev=15,
+                               alpha.level = 0.95)
 
+
+#######################################################################
 ##### Katie Ann Jager vidoe on Normal distribution
 # https://www.youtube.com/watch?v=QkmSUq498iY
 
@@ -74,4 +110,14 @@ polygon(cord.c, cord.d, col=grey(0.90))
 p.left.of.x <- pnorm(x, mu, stdev)
 p.right.of.x <- 1-pnorm(x, mu, stdev)
 
-x.percentile <- qnorm(0.95, mu, stdev) 
+#################################
+alpha.value <- 0.05
+number.tails <- 2
+
+x.percentile.lower <- qnorm((alpha.value/number.tails), mean=0, sd=1)
+x.percentile.upper <- qnorm(1-(alpha.value/number.tails), mean=0, sd=1)
+
+
+mu = 2
+stdev = 0.6
+x = 1.5
