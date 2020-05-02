@@ -165,4 +165,15 @@ z.results <- z.test.one.sample(sample.mean=346,
 cat ("The sample mean is ", z.results$z, " standard error units from ",
      "the population mean of ", popmu)
 
+popmu=191
+z.results <- z.test.one.sample(sample.mean=197.1, 
+                               sample.size=100, 
+                               popmu=popmu, 
+                               popstdev=25.6,
+                               alpha.level = alpha.value)
+
+cat ("The sample mean is ", z.results$z, " standard error units from ",
+     "the population mean of ", popmu)
+
+
 
